@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  php:
+    build:
+      context: ./docker/php
+    image: php-fpm-new-project-api
+    volumes:
+      - ./:/app
+  api:
+    build:
+      context: ./docker/nginx
+    image: nginx-new-project-api
+    ports:
+      - 80:80
+    volumes:
+      - ./:/app
+  db:
+    image: mysql:8.0.12
+    volumes:
+      - document-conversion-db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3306:3306
+
+volumes:
+  document-conversion-db:
