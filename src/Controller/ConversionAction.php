@@ -3,14 +3,14 @@
 namespace App\Controller;
 
 use ApiPlatform\Core\Validator\Exception\ValidationException;
+use App\Entity\Conversion;
 use App\Form\ConversionFile;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use App\Entity\Conversion;
 
-final class ConvertDocument
+final class ConversionAction
 {
     private $validator;
     private $doctrine;
@@ -31,12 +31,11 @@ final class ConvertDocument
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $conversion->setStatus(1);
-            $conversion->setHash(hash_file('sha256', $conversion->file->getRealPath()));
-
             $em = $this->doctrine->getManager();
             $em->persist($conversion);
             $em->flush();
+
+            $conversion->getOrder()->setStatus(2);
 
             return $conversion;
         }

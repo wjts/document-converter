@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -11,179 +13,111 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *     collectionOperations={"get", "post"={
+ *     collectionOperations={"get","post"={
  *          "method"="POST",
  *          "path"="/conversion",
- *          "controller"=App\Controller\ConvertDocument::class,
+ *          "controller"=App\Controller\ConversionAction::class,
  *          "defaults"={"_api_receive"=false},
- *          "normalization_context"={"groups"={"post"}},
+ *          "normalization_context"={"groups"={"conversion"}},
  *     }},
  *     itemOperations={"get"},
  * )
+
  * @Vich\Uploadable()
  * @ORM\Entity()
  */
 class Conversion
 {
     /**
-     * @var int
+     * @var Order
      *
      * @ORM\Id()
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"post"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Order")
      */
-    private $id;
+    private $order;
 
     /**
      * @var File
      *
      * @Assert\NotNull()
-     * @Vich\UploadableField(mapping="document_object", fileNameProperty="filename", mimeType="mimeType", originalName="originalName")
+     * @Vich\UploadableField(mapping="converted_document", fileNameProperty="convertedFilename", originalName="convertedOriginalName")
      */
-    public $file;
+    public $convertedFile;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string")
      */
-    private $filename;
+    private $convertedFilename;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string")
      */
-    private $mimeType;
+    private $convertedOriginalName;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
+     * @return Order
      */
-    private $originalName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=64, options={"fixed": true})
-     */
-    private $hash;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @Groups({"post", "get"})
-     */
-    private $status;
-
-    /**
-     * @return int
-     */
-    public function getId(): int
+    public function getOrder(): Order
     {
-        return $this->id;
+        return $this->order;
     }
 
     /**
-     * @param int $id
+     * @param Order $order
      * @return Conversion
      */
-    public function setId(int $id): Conversion
+    public function setOrder(Order $order): Conversion
     {
-        $this->id = $id;
+        $this->order = $order;
+        return $this;
+    }
+
+    /**
+     * @return Uuid
+     * @Groups({"conversion"})
+     */
+    public function getId(): UuidInterface
+    {
+        return $this->order->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getConvertedFilename(): string
+    {
+        return $this->convertedFilename;
+    }
+
+    /**
+     * @param string $convertedFilename
+     * @return Conversion
+     */
+    public function setConvertedFilename(string $convertedFilename): Conversion
+    {
+        $this->convertedFilename = $convertedFilename;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getFilename(): ?string
+    public function getConvertedOriginalName(): string
     {
-        return $this->filename;
+        return $this->convertedOriginalName;
     }
 
     /**
-     * @param string $filename
+     * @param string $convertedOriginalName
      * @return Conversion
      */
-    public function setFilename(string $filename): Conversion
+    public function setConvertedOriginalName(string $convertedOriginalName): Conversion
     {
-        $this->filename = $filename;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMimeType(): string
-    {
-        return $this->mimeType;
-    }
-
-    /**
-     * @param string $mimeType
-     * @return Conversion
-     */
-    public function setMimeType(string $mimeType): Conversion
-    {
-        $this->mimeType = $mimeType;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHash(): ?string
-    {
-        return $this->hash;
-    }
-
-    /**
-     * @param string $hash
-     * @return Conversion
-     */
-    public function setHash(string $hash): Conversion
-    {
-        $this->hash = $hash;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStatus(): int
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param int $status
-     * @return Conversion
-     */
-    public function setStatus(int $status): Conversion
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOriginalName(): string
-    {
-        return $this->originalName;
-    }
-
-    /**
-     * @param string $originalName
-     * @return Conversion
-     */
-    public function setOriginalName(string $originalName): Conversion
-    {
-        $this->originalName = $originalName;
+        $this->convertedOriginalName = $convertedOriginalName;
         return $this;
     }
 }

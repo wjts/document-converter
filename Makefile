@@ -1,7 +1,10 @@
-.PHONY: up destroy destroy-all build
+.PHONY: up destroy destroy-all build stop
 
 up:
 	docker-compose up -d
+
+stop:
+	docker-compose stop
 
 destroy:
 	docker-compose down
@@ -11,3 +14,4 @@ destroy-all:
 
 build:
 	docker-compose up -d --build --force-recreate
+

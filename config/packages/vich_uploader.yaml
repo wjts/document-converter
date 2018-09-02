@@ -1,10 +1,14 @@
 vich_uploader:
-  db_driver: orm
+    db_driver: orm
 
-  mappings:
-    document_object:
-      uri_prefix: /document
-      upload_destination: '%kernel.project_dir%/public/documents'
-      namer: Vich\UploaderBundle\Naming\UniqidNamer
-      directory_namer: vich_uploader.directory_namer_subdir
-
+    mappings:
+        source_document:
+            uri_prefix: /document/input
+            upload_destination: '%kernel.project_dir%/public/documents/source'
+            namer: Vich\UploaderBundle\Naming\UniqidNamer
+            directory_namer: vich_uploader.directory_namer_subdir
+        converted_document:
+            uri_prefix: /document/converted
+            upload_destination: '%kernel.project_dir%/public/documents/converted'
+            namer: Vich\UploaderBundle\Naming\UniqidNamer
+            directory_namer: vich_uploader.directory_namer_subdir

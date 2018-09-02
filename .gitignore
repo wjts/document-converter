@@ -6,6 +6,7 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
+/public/documents/
 
 # Created by https://www.gitignore.io/api/phpstorm+all
 
